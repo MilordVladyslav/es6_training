@@ -1,7 +1,7 @@
 window.onload = () => {
     'use srtict'
     var countryAsync = async(countryName) => {
-    var response = await fetch(`http://localhost:3000/cart`)
+    var response = await fetch(`http://puzzle.mead.io/puzzle`)
     if(response.status === 200) {
         var data = await response.json()
         return  data
@@ -11,7 +11,7 @@ window.onload = () => {
     }
 
     countryAsync('United States of America').then((data) => {
-        document.body.innerHTML = `${data[0]}`
+        document.body.innerHTML = data.puzzle
     }).catch((err) => {
         console.log(`You have an error: ${err}`)
     })
@@ -48,6 +48,7 @@ window.onload = () => {
         }
         this.guessesAbility -= 1
     }
+
     Hangman.prototype.getPuzzle = function () {
         const actresses = []
         this.keyword.forEach((letter) => {
@@ -86,6 +87,7 @@ window.onload = () => {
             this.secondName = names[1]
         }
     }
+
     const myPerson = new PersonClass('Dude', 'Lebowski')
     console.log(myPerson.getFullName())
 
@@ -108,5 +110,51 @@ window.onload = () => {
      data.location = '  New York  '
 
     /*-------------------ASYNCHRONOUS JAVASCRIPT--------------------*/
+
+    // const request = new XMLHttpRequest()
+    //
+    // request.addEventListener('readystatechange', (e) => {
+    //     if (e.target.readyState === 4 && e.target.status === 200) {
+    //         const data = JSON.parse(e.target.response)
+    //         // console.log(e.target)
+    //         console.log(data)
+    //     } else if (e.target.readyState === 4) {
+    //         console.log('An error has taken place')
+    //     }
+    // })
+    //
+    // request.open('GET', 'http://puzzle.mead.io/puzzle')
+    // request.send()
+
+
+    //CALLBACK
+
+    const getPuzzle = (callback) => {
+        const request = new XMLHttpRequest()
+
+        request.addEventListener('readystatechange', (e) => {
+            if (e.target.readyState === 4 && e.target.status === 200) {
+                const data = JSON.parse(e.target.response)
+                // console.log(e.target)
+                callback(undefined, data.puzzle)
+            } else if (e.target.readyState === 4) {
+                callback('an error', undefined)
+                console.log('An error has taken place')
+            }
+        })
+
+        request.open('GET', 'http://puzzle.mead.io/puzzle')
+        request.send()
+    }
+
+
+    getPuzzle((error, puzzle) => {
+        if (error) {
+            console.log(`Error: ${error}`)
+        } else {
+            console.log(puzzle)
+        }
+    })
+
 }
 

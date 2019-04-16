@@ -129,31 +129,141 @@ window.onload = () => {
 
     //CALLBACK
 
-    const getPuzzle = (callback) => {
+    // const getPuzzle = (callback) => {
+    //     const request = new XMLHttpRequest()
+    //
+    //     request.addEventListener('readystatechange', (e) => {
+    //         if (e.target.readyState === 4 && e.target.status === 200) {
+    //             const data = JSON.parse(e.target.response)
+    //             // console.log(e.target)
+    //             callback(undefined, data.puzzle)
+    //         } else if (e.target.readyState === 4) {
+    //             callback('an error', undefined)
+    //             console.log('An error has taken place')
+    //         }
+    //     })
+    //
+    //     request.open('GET', 'http://puzzle.mead.io/puzzle')
+    //     request.send()
+    // }
+    //
+    //
+    // getPuzzle((error, puzzle) => {
+    //     if (error) {
+    //         console.log(`Error: ${error}`)
+    //     } else {
+    //         console.log(puzzle)
+    //     }
+    // })
+
+    const myFunction = () => {
+        const message = 'This is my message'
+        const printMessage = () => {
+            console.log(message)
+        }
+
+        return printMessage
+
+    }
+
+    const myPrintMessage = myFunction()
+
+    myPrintMessage()
+
+    const createCounter = () => {
+        let count = 0
+        return {
+            increment() {
+                count++
+            },
+            decrement() {
+                count--
+            },
+            get() {
+                return count
+            }
+        }
+    }
+
+    const counter = createCounter()
+    counter.increment()
+    counter.decrement()
+    counter.increment()
+    console.log(counter.get())
+
+    //thanks for closures we can create values, which is only modifiable via the interface we prowided
+
+    const createAdder = (a) => {
+        return (b) => {
+            return a + b
+        }
+    }
+    const add10 = createAdder(10)
+    console.log(add10(-2))
+
+    const add = (a, b) => a + b
+
+    //tipper
+    const createTipper = (baseTip) => {
+        return (amount) => {
+            return baseTip * amount
+        }
+    }
+
+    const tip20 = createTipper(20)
+    const tip30 = createTipper(.3)
+    console.log(tip20(100))
+
+    //Callback
+    const getDataCallback = (callback) => {
+        setTimeout(() => {
+            callback(undefined, 'This is the data')
+        }, 2000)
+    }
+
+    getDataCallback((err, data) => {
+        if(err) {
+
+        } else {
+            console.log(data)
+        }
+    })
+
+    //Promise
+
+    const myPromise = new Promise ((resolve, reject) => {
+        setTimeout(() => {
+            resolve('This is the promise data')
+        }, 2000)
+    })
+
+    myPromise.then((data) => {
+        console.log(data)
+    }, (err) => {
+        console.log(err)
+    })
+
+    const getPuzzle = (wordCount) => new Promise((resolve, reject) => {
         const request = new XMLHttpRequest()
 
         request.addEventListener('readystatechange', (e) => {
             if (e.target.readyState === 4 && e.target.status === 200) {
                 const data = JSON.parse(e.target.response)
                 // console.log(e.target)
-                callback(undefined, data.puzzle)
+                resolve (data.puzzle)
             } else if (e.target.readyState === 4) {
-                callback('an error', undefined)
-                console.log('An error has taken place')
+                reject('An error was ocurred')
             }
         })
 
-        request.open('GET', 'http://puzzle.mead.io/puzzle')
+        request.open('GET', `http://puzzle.mead.io/puzzle?wordCount=${wordCount}`)
         request.send()
-    }
+    })
 
-
-    getPuzzle((error, puzzle) => {
-        if (error) {
-            console.log(`Error: ${error}`)
-        } else {
-            console.log(puzzle)
-        }
+    getPuzzle(5).then((data) => {
+        console.log(data)
+    }, (err) => {
+        console.log(`error: ${err}`)
     })
 
 }

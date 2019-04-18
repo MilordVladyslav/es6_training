@@ -15,6 +15,22 @@ window.onload = () => {
     }).catch((err) => {
         console.log(`You have an error: ${err}`)
     })
+    // var countryAsync = async(countryName) => {
+    //     var response = await fetch(`http://restcountries.eu/rest/v2/all`)
+    //     if(response.status === 200) {
+    //         var data = await response.json()
+    //         return  data.find((country) => country.name === countryName)
+    //     } else {
+    //         throw new Error('Unable to fetch the country')
+    //     }
+
+    // }
+
+    // countryAsync('Germany').then((data) => {
+    //     console.log(data.alpha2Code + 'It is from async! You are awesome, Vlad )')
+    // }).catch((err) => {
+    //     console.log(`You have an error: ${err}`)
+    // })
 
     //OOP
 
@@ -265,6 +281,47 @@ window.onload = () => {
     }, (err) => {
         console.log(`error: ${err}`)
     })
+
+    //promise chaining
+
+    const getDataPromise = (val) => new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve(val * 2)
+        }, 2000)
+    })
+
+    getDataPromise(2).then((data) => {
+        getDataPromise(data).then((data) => {
+            console.log(`promise data: ${data}`)
+        }, (err) => {
+            console.log(err)
+        })
+    }, (err) => {
+        console.log(err)
+    })
+
+    getDataPromise(10).then((data) => {
+        return getDataPromise(data)
+    }).then((data) => {
+        console.log(data)
+    }).then((data) => {
+        return getDataPromise(data)
+    }).catch((err) => {
+        console.log(err)
+    })
+
+    fetch('http://puzzle.mead.io/puzzle', {}).then((response) => {
+        if(response.status === 200) {
+            response.json()
+        } else {
+            throw new Error('Unable to fetch the puzzle')
+        }
+    }).then((data) => {
+        console.log(data.puzzle)
+    }).catch((error) => {
+        console.log(error)
+    })
+
 
 }
 
